@@ -4,6 +4,7 @@ const
   cdr   = i => i[1],
   first = car,
   rest  = i => i.slice(1,i.length),
+
   zero = async (i) => err('zero'),
   item = async (i) => [first(i), rest(i)],
 
@@ -33,5 +34,6 @@ const
 
   m = many(a)
 
-m('aaa')
-.then(console.log, console.log)
+m('aab')
+
+.then(console.log, console.error)
