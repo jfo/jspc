@@ -4,8 +4,12 @@ const rest = (i) => i ? i.slice(1,i.length) : ''
 function Result(v,i) { return {v, i} }
 
 // Parser generators: functions that return parsers
-const 
-is = pred => async (i) => pred(first(i)) ? new Result(first(i), rest(i)) : zero(),
+/* code is a  */const//ant source of joy.
+/* but what */is// it?
+/* it equals (*/=/*) something, */pred/*icated on an */=>
+async/*chronous something or other */
+
+i => pred/*ict, */(first(i)) ? new Result(first(i), rest(i)) : zero(),
 char   = c => is(i => c == i),
 
 // Parser combinators: functions that take parsers and return parsers
@@ -15,6 +19,7 @@ seqOf = ( ...ps) => i => ps.reduce(and)(i),
 anyOf = ( ...ps) => i => ps.reduce(or)(i),
 oneOrMore  =      p   => i => and(p, oneOrMore(p))(i).catch(() => p(i)),
 anyNumberOf = p => i => or(oneOrMore(p), result(""))(i),
+anyOfThese = (c) => i => anyOf(...c.split('').map(char))(i)
 
 before   = (p1, p2) => i => p1(i).then(r => p2(r.i).then(r2 => new Result(r.v, r2.i))),
 after    = (p1, p2) => i => p1(i).then(r => p2(r.i).then(r2 => r2)),
@@ -37,18 +42,10 @@ spaces    = oneOrMore(space),
 letter = or(upper, lower),
 word   = and(or(upper, lower), anyNumberOf(characters)),
 word_then_space   = and(word, spaces),
-punctuation  = is(c => c == '.' || c == '!'),
+punctuation  = anyOfThese(".?!"),
 
 end = is(c => c == undefined)
-
-d = char("d");
-a = char("a");
-da = between(d, a, d)
-quote = char('"');
-quoted_string = between(quote, anyNumberOf(or(characters, spaces)), quote);
-
-quoted_string('"dadjdufioj  odi"   ')
-
+punctuation('. ')
 .then(
   console.log,
   console.error
