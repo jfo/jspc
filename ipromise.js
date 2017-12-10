@@ -4,12 +4,9 @@ const rest = (i) => i ? i.slice(1,i.length) : ''
 function Result(v,i) { return {v, i} }
 
 // Parser generators: functions that return parsers
-/* code is a  */const//ant source of joy.
-/* but what */is// it?
-/* it equals (*/=/*) something, */pred/*icated on an */=>
-async/*chronous something or other */
+const
 
-i => pred/*ict, */(first(i)) ? new Result(first(i), rest(i)) : zero(),
+is = pred => async (i) => pred(first(i)) ? new Result(first(i), rest(i)) : zero(),
 char   = c => is(i => c == i),
 
 // Parser combinators: functions that take parsers and return parsers
@@ -45,6 +42,7 @@ word_then_space   = and(word, spaces),
 punctuation  = anyOfThese(".?!"),
 
 end = is(c => c == undefined)
+
 punctuation('. ')
 .then(
   console.log,
