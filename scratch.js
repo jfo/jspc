@@ -1,3 +1,1 @@
-console.log(
-  ".?!".split('')
-)
+while(1);
