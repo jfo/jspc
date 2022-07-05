@@ -1,4 +1,6 @@
-function Result(v,i) { return {v, i} }
+function Result(v, i) {
+  return { v, i };
+}
 class Parser {
   constructor(p) {
     if (p instanceof Parser) {
@@ -18,8 +20,6 @@ class Parser {
 }
 const is = (p) => new Parser(p);
 
-
 console.log(
-  is().run('dfji')
+  is().run("dfji"),
 );
-
