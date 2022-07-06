@@ -13,7 +13,7 @@ type Parser = (s: Stream) => Result;
 type Combinator = (...parsers: Parser[]) => Parser;
 
 // parser generators
-export const charParse = (c: string): Parser =>
+export const char = (c: string): Parser =>
   ({ src, idx }) =>
     c === src?.[idx]
       ? { stream: { src, idx: idx + 1 }, value: src[idx] }
@@ -37,7 +37,7 @@ export const and: Combinator = (p1, p2) =>
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 
 // mapper
-export const mapParse = (parser: Parser, fn: Function) =>
+export const map = (parser: Parser, fn: Function) =>
   (input: Stream) => {
     const out = parser(input);
 

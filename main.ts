@@ -1,9 +1,9 @@
-import { and, charParse, mapParse, u } from "./lib.ts";
+import { and, char, map, u } from "./lib.ts";
 
-const one = charParse("1");
-const oneThatParsesIntoAnInt = mapParse(one, (x: string) => parseInt(x));
-const two = charParse("2");
-const twoThatParsesIntoAnInt = mapParse(two, (x: string) => parseInt(x));
+const one = char("1");
+const oneThatParsesIntoAnInt = map(one, (x: string) => parseInt(x));
+const two = char("2");
+const twoThatParsesIntoAnInt = map(two, (x: string) => parseInt(x));
 const onetwo = and(oneThatParsesIntoAnInt, twoThatParsesIntoAnInt);
 
 console.log(
