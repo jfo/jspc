@@ -2,29 +2,38 @@ type Stream = {
   src: string;
   idx: number;
 };
-
 type OutputValue = {
   stream: Stream;
   value: any;
 };
-
 type Result = OutputValue | undefined;
 
-const charParse = (c: string) =>
-  ({ src, idx }: Stream): Result =>
-    c === src[idx]
+// function signatures
+type Parser = (s: Stream) => Result;
+type Combinator = (...parsers: Parser[]) => Parser;
+
+const charParse = (c: string): Parser =>
+  ({ src, idx }) =>
+    c === src?.[idx]
       ? { stream: { src, idx: idx + 1 }, value: src[idx] }
       : undefined;
 
 // combinators
-const and = (p1: Function, p2: Function) => (input: Stream) => p2(p1(input));
-const or = (p1: Function, p2: Function) =>
-  (input: Stream) => p1(input) || p2(input);
+const and: Combinator = (p1, p2) =>
+  (input) => {
+    const r = p1(input);
+    if (r) {
+      const r2 = p2(r.stream);
+      if (r2) {
+        return {
+          stream: r2.stream,
+          value: [r.value, r2.value],
+        };
+      }
+    }
+  };
 
-// parser
-const parse = (input: string, parser: Function) => {
-  return parser({ src: input, idx: 0 });
-};
+const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 
 // mapper
 const mapParse = (parser: any, fn: any) =>
@@ -39,6 +48,19 @@ const mapParse = (parser: any, fn: any) =>
 
 ///////////////
 
+const u = (s: string): Stream => ({ src: s, idx: 0 });
+
 const one = charParse("1");
-const oneThatParsesIntoAnInt = mapParse(one, (x: any) => parseInt(x));
-console.log(parse("1dsjafi", oneThatParsesIntoAnInt));
+const oneThatParsesIntoAnInt = mapParse(one, (x: string) => parseInt(x));
+const two = charParse("2");
+const twoThatParsesIntoAnInt = mapParse(two, (x: string) => parseInt(x));
+const onetwo = and(oneThatParsesIntoAnInt, twoThatParsesIntoAnInt);
+
+console.log(
+  onetwo(u("12dsjafi")),
+);
+
+// const p = mapParse(onetwo, (x: number, y: number) => x + y);
+
+// console.log(parse("21dsjafi", two));
+// console.log(parse("12dsjafi", onetwo));

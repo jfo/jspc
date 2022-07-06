@@ -48,7 +48,7 @@ const first = (i) => i ? i[0] : fail(),
   number = map(parseInt, digit),
   numbers = and(upper, anyNumberOf(digit));
 
-numbers("Adfi  jdifo")
+numbers("A111  jdifo")
   .then(
     console.log,
     console.error,
