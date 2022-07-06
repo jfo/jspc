@@ -9,7 +9,11 @@ const onetwo = map(and(one, two), combineInts);
 const twoone = map(and(two, one), combineInts);
 
 const number = or(onetwo, twoone);
-const op = char("+");
+const plus = char("+");
+const minus = char("-");
+const times = char("*");
+const divide = char("/");
+const op = or(divide, or(times, or(plus, minus)));
 
 const expression = and(number, and(op, number));
 
@@ -26,9 +30,21 @@ const calculator = map(expression, (value: any) => {
     case "+": {
       return x + y;
     }
+    case "-": {
+      return x - y;
+    }
+    case "*": {
+      return x * y;
+    }
+    case "/": {
+      return x / y;
+    }
   }
 });
 
 console.log(
-  calculator(u("12+21")),
+  calculator(u("12+21"))?.value,
+  calculator(u("12-21"))?.value,
+  calculator(u("21*21"))?.value,
+  calculator(u("21/12"))?.value,
 );
