@@ -10,7 +10,7 @@ type Result = OutputValue | undefined;
 
 // function signatures
 type Parser = (s: Stream) => Result;
-type Generator = (s: any) => Parser;
+type Generator = (s: string) => Parser;
 type Combinator = (...parsers: Parser[]) => Parser;
 
 export const unit = (s: string): Stream => ({ src: s, idx: 0 });

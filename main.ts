@@ -22,9 +22,9 @@ const times = char("*");
 const divide = char("/");
 const op = any(divide, times, plus, minus);
 
-const expression = andThen(number, op, number);
+let expression = andThen(number, op, number);
 
-const calculator = map(expression, (value: any) => {
+expression = map(expression, (value: any) => {
   if (!value) {
     return;
   }
@@ -46,6 +46,7 @@ const calculator = map(expression, (value: any) => {
   }
 });
 
+
 console.log(
-  calculator(unit("1+190")),
+  expression(unit("1+190")),
 );
