@@ -10,13 +10,14 @@ type Result = OutputValue | undefined;
 
 // function signatures
 type Parser = (s: Stream) => Result;
+type Generator = (s: any) => Parser;
 type Combinator = (...parsers: Parser[]) => Parser;
 
-export const u = (s: string): Stream => ({ src: s, idx: 0 });
+export const unit = (s: string): Stream => ({ src: s, idx: 0 });
 
 // parser generators
 // -----------------
-export const char = (c: string): Parser =>
+export const char: Generator = (c) =>
   ({ src, idx }) =>
     c === src?.[idx]
       ? { stream: { src, idx: idx + 1 }, value: src[idx] }
@@ -51,6 +52,27 @@ export const and: Combinator = (p1, p2) =>
   };
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
+export const oneOrMore: Combinator = (p) => ({src, idx}) => {
+  const head = p({src, idx});
+  const tail = p({src, idx: idx + 1})
+
+  console.log('head', head)
+  console.log('tail', tail)
+
+  if (!tail) {
+    return {
+      stream: {
+        src,
+        idx,
+      },
+      value: head?.value
+    }
+  }
+
+  return and(p, oneOrMore(p))({src,idx});
+};
+
+
 
 // mapper
 // ------
@@ -63,3 +85,24 @@ export const map = (parser: Parser, fn: Function) =>
       return out;
     }
   };
+
+export const zeroOrMore = (p: Parser, input: Stream): Result =>  {
+  const firstResult = p(input);
+
+  if (!firstResult) {
+    return {
+      stream: input,
+      value: ''
+    };
+  }
+  let subsequent = zeroOrMore(p, {src: input.src, idx: input.idx +1 });
+  const value = firstResult.value + subsequent?.value;
+
+  return {
+    stream: {
+      src: input.src,
+      idx: input.idx + value.length
+    },
+    value
+  }
+}
