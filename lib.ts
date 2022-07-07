@@ -51,7 +51,6 @@ export const zeroOrMore: Combinator = (p) =>
 
     let subsequent = zeroOrMore(p)({ src: input.src, idx: input.idx + 1 });
     const value = firstResult.value + subsequent?.value;
-    console.log(value);
 
     return {
       stream: {
@@ -80,7 +79,13 @@ export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const andThen: Combinator = (...ps) =>
   ps.reduce((p1, p2) => and(p1, p2));
 export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
-export const many: Combinator = (p) => (input) => zeroOrMore(p)(input);
+export const many: Combinator = (p) =>
+  (input) => {
+    const o = zeroOrMore(p)(input);
+    if (o?.value) {
+      return o;
+    }
+  };
 
 // mapper
 // ------

@@ -1,4 +1,5 @@
 import {
+  and,
   andThen,
   any,
   anyChar,
@@ -11,10 +12,9 @@ import {
 } from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
-const combineInts = (arr: any) => intParse(arr.join(""));
 
 const digit = anyChar("0123456789");
-const number = many(digit);
+const number = map(many(digit), intParse);
 
 const plus = char("+");
 const minus = char("-");
@@ -28,8 +28,6 @@ const calculator = map(expression, (value: any) => {
   if (!value) {
     return;
   }
-  console.log(value);
-
   const [x, operation, y] = value;
 
   switch (operation) {
@@ -49,5 +47,5 @@ const calculator = map(expression, (value: any) => {
 });
 
 console.log(
-  andThen(plus, minus, times)(unit("+-*")),
+  calculator(unit("1+190")),
 );
