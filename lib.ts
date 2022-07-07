@@ -52,27 +52,27 @@ export const and: Combinator = (p1, p2) =>
   };
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
-export const oneOrMore: Combinator = (p) => ({src, idx}) => {
-  const head = p({src, idx});
-  const tail = p({src, idx: idx + 1})
+export const oneOrMore: Combinator = (p) =>
+  ({ src, idx }) => {
+    const head = p({ src, idx });
+    const tail = p({ src, idx: idx + 1 });
 
-  console.log('head', head)
-  console.log('tail', tail)
+    console.log("head", head);
+    console.log("tail", tail);
 
-  if (!tail) {
-    return {
-      stream: {
-        src,
-        idx,
-      },
-      value: head?.value
+    if (!tail) {
+      return {
+        stream: {
+          src,
+          idx,
+        },
+        value: head?.value,
+      };
     }
-  }
 
-  return and(p, oneOrMore(p))({src,idx});
-};
-
-
+    return and(p, oneOrMore(p))({ src, idx });
+  };
+export const many: Combinator = (p) => (input) => zeroOrMore(p, input);
 
 // mapper
 // ------
@@ -86,23 +86,24 @@ export const map = (parser: Parser, fn: Function) =>
     }
   };
 
-export const zeroOrMore = (p: Parser, input: Stream): Result =>  {
+export const zeroOrMore = (p: Parser, input: Stream): Result => {
   const firstResult = p(input);
 
   if (!firstResult) {
     return {
       stream: input,
-      value: ''
+      value: "",
     };
   }
-  let subsequent = zeroOrMore(p, {src: input.src, idx: input.idx +1 });
+
+  let subsequent = zeroOrMore(p, { src: input.src, idx: input.idx + 1 });
   const value = firstResult.value + subsequent?.value;
 
   return {
     stream: {
       src: input.src,
-      idx: input.idx + value.length
+      idx: input.idx + value.length,
     },
-    value
-  }
-}
+    value,
+  };
+};

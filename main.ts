@@ -1,11 +1,21 @@
-import { and, any, anyChar, char, map, or, string, unit, oneOrMore, zeroOrMore } from "./lib.ts";
-
+import {
+  and,
+  any,
+  anyChar,
+  char,
+  many,
+  map,
+  oneOrMore,
+  or,
+  string,
+  unit,
+} from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
 const combineInts = (arr: any) => intParse(arr.join(""));
 
 const digit = anyChar("0123456789");
-const number = map(oneOrMore(digit), intParse);
+const number = map(many(digit), intParse);
 
 const plus = char("+");
 const minus = char("-");
@@ -19,7 +29,7 @@ const calculator = map(expression, (value: any) => {
   if (!value) {
     return;
   }
-  console.log(value)
+  console.log(value);
 
   const x = value[0];
   const y = value[1][1];
@@ -44,6 +54,6 @@ const calculator = map(expression, (value: any) => {
 const wat = string("wat");
 
 console.log(
-  // calculator(unit('12123*123'))
-  zeroOrMore(digit,unit('12213890'))
+  calculator(unit("100*100")),
+  // number(unit('438793427'))
 );
