@@ -14,24 +14,6 @@ type Combinator = (...parsers: Parser[]) => Parser;
 
 export const u = (s: string): Stream => ({ src: s, idx: 0 });
 
-// combinators
-// -----------
-export const and: Combinator = (p1, p2) =>
-  (input) => {
-    const r = p1(input);
-    if (r) {
-      const r2 = p2(r.stream);
-      if (r2) {
-        return {
-          stream: r2.stream,
-          value: [r.value, r2.value],
-        };
-      }
-    }
-  };
-export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
-export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
-
 // parser generators
 // -----------------
 export const char = (c: string): Parser =>
@@ -51,6 +33,24 @@ export const string = (c: string): Parser =>
 
 export const anyChar = (str: string): Parser =>
   (s) => any(...str.split("").map(char))(s);
+
+// combinators
+// -----------
+export const and: Combinator = (p1, p2) =>
+  (input) => {
+    const r = p1(input);
+    if (r) {
+      const r2 = p2(r.stream);
+      if (r2) {
+        return {
+          stream: r2.stream,
+          value: [r.value, r2.value],
+        };
+      }
+    }
+  };
+export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
+export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
 
 // mapper
 // ------
