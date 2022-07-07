@@ -1,15 +1,4 @@
-import {
-  and,
-  any,
-  anyChar,
-  char,
-  many,
-  map,
-  oneOrMore,
-  or,
-  string,
-  unit,
-} from "./lib.ts";
+import { and, any, anyChar, char, many, map, or, string, unit } from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
 const combineInts = (arr: any) => intParse(arr.join(""));
@@ -29,11 +18,8 @@ const calculator = map(expression, (value: any) => {
   if (!value) {
     return;
   }
-  console.log(value);
 
-  const x = value[0];
-  const y = value[1][1];
-  const operation = value[1][0];
+  const [x, operation, y] = value;
 
   switch (operation) {
     case "+": {
@@ -54,6 +40,7 @@ const calculator = map(expression, (value: any) => {
 const wat = string("wat");
 
 console.log(
-  calculator(unit("100*100")),
+  calculator(unit("100*100"))?.value,
+  calculator(unit("100+100"))?.value,
   // number(unit('438793427'))
 );

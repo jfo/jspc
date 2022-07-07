@@ -23,7 +23,7 @@ export const char: Generator = (c) =>
       ? { stream: { src, idx: idx + 1 }, value: src[idx] }
       : undefined;
 
-export const string = (c: string): Parser =>
+export const string: Generator = (c): Parser =>
   ({ src, idx }) =>
     c === src?.slice(idx, c.length + idx)
       ? {
@@ -32,7 +32,7 @@ export const string = (c: string): Parser =>
       }
       : undefined;
 
-export const anyChar = (str: string): Parser =>
+export const anyChar: Generator = (str): Parser =>
   (s) => any(...str.split("").map(char))(s);
 
 // combinators
@@ -45,34 +45,36 @@ export const and: Combinator = (p1, p2) =>
       if (r2) {
         return {
           stream: r2.stream,
-          value: [r.value, r2.value],
+          value: [r.value, r2.value].flat(),
         };
       }
     }
   };
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const any: Combinator = (...ps) => ps.reduce((p1, p2) => or(p1, p2));
-export const oneOrMore: Combinator = (p) =>
-  ({ src, idx }) => {
-    const head = p({ src, idx });
-    const tail = p({ src, idx: idx + 1 });
+export const zeroOrMore: Combinator = (p) =>
+  (input) => {
+    const firstResult = p(input);
 
-    console.log("head", head);
-    console.log("tail", tail);
-
-    if (!tail) {
+    if (!firstResult) {
       return {
-        stream: {
-          src,
-          idx,
-        },
-        value: head?.value,
+        stream: input,
+        value: "",
       };
     }
 
-    return and(p, oneOrMore(p))({ src, idx });
+    let subsequent = zeroOrMore(p)({ src: input.src, idx: input.idx + 1 });
+    const value = firstResult.value + subsequent?.value;
+
+    return {
+      stream: {
+        src: input.src,
+        idx: input.idx + value.length,
+      },
+      value,
+    };
   };
-export const many: Combinator = (p) => (input) => zeroOrMore(p, input);
+export const many: Combinator = (p) => (input) => zeroOrMore(p)(input);
 
 // mapper
 // ------
@@ -85,25 +87,3 @@ export const map = (parser: Parser, fn: Function) =>
       return out;
     }
   };
-
-export const zeroOrMore = (p: Parser, input: Stream): Result => {
-  const firstResult = p(input);
-
-  if (!firstResult) {
-    return {
-      stream: input,
-      value: "",
-    };
-  }
-
-  let subsequent = zeroOrMore(p, { src: input.src, idx: input.idx + 1 });
-  const value = firstResult.value + subsequent?.value;
-
-  return {
-    stream: {
-      src: input.src,
-      idx: input.idx + value.length,
-    },
-    value,
-  };
-};
