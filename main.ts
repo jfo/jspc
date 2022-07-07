@@ -1,4 +1,4 @@
-import { and, char, map, or, u } from "./lib.ts";
+import { and, any, anyChar, char, map, or, string, u } from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
 const combineInts = (arr: any) => intParse(arr.join(""));
@@ -7,8 +7,8 @@ const one = map(char("1"), intParse);
 const two = map(char("2"), intParse);
 const onetwo = map(and(one, two), combineInts);
 const twoone = map(and(two, one), combineInts);
+const number = anyChar("0123456789");
 
-const number = or(onetwo, twoone);
 const plus = char("+");
 const minus = char("-");
 const times = char("*");
@@ -42,9 +42,8 @@ const calculator = map(expression, (value: any) => {
   }
 });
 
+const wat = string("wat");
 console.log(
-  calculator(u("12+21"))?.value,
-  calculator(u("12-21"))?.value,
-  calculator(u("21*21"))?.value,
-  calculator(u("21/12"))?.value,
+  wat(u("wat")),
+  wat(u("sfdajwat")),
 );
