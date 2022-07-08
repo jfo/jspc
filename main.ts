@@ -1,15 +1,4 @@
-import {
-  and,
-  andThen,
-  any,
-  anyChar,
-  char,
-  many,
-  map,
-  or,
-  string,
-  unit,
-} from "./lib.ts";
+import { andThen, any, anyChar, char, many, map, unit } from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
 
@@ -18,13 +7,11 @@ const number = map(many(digit), intParse);
 
 const plus = char("+");
 const minus = char("-");
-const times = char("*");
-const divide = char("/");
-const op = any(divide, times, plus, minus);
+const operation = any(plus, minus);
 
-let expression = andThen(number, op, number);
+const expression = andThen(number, operation, number);
 
-expression = map(expression, (value: any) => {
+const calculate = map(expression, (value: any) => {
   if (!value) {
     return;
   }
@@ -37,16 +24,30 @@ expression = map(expression, (value: any) => {
     case "-": {
       return x - y;
     }
-    case "*": {
-      return x * y;
-    }
-    case "/": {
-      return x / y;
-    }
   }
 });
 
+const p = console.log;
+p("\n");
+// ===========================================
 
-console.log(
-  expression(unit("1+190")),
-);
+const a = char("A");
+p(a(unit("A")));
+// p(a(unit("B")))
+
+// p(digit(unit("1")))
+// p(digit(unit("A")))
+// p(number(unit("123")))
+// p(number(unit("abc")))
+
+// p(plus(unit("+")))
+// p(operation(unit("+")))
+// p(operation(unit("-")))
+
+// p(expression(unit("1+abc")))
+// p(expression(unit("1+")))
+// p(expression(unit("1+2")))
+
+// p(calculate(unit("1+2")))
+
+p("\n");
