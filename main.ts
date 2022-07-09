@@ -21,9 +21,6 @@ const minus = char("-");
 const times = char("*");
 const divide = char("/");
 const op = any(divide, times, plus, minus);
-
-let expression = andThen(number, op, number);
-
 expression = map(expression, (value: any) => {
   if (!value) {
     return;
@@ -47,6 +44,12 @@ expression = map(expression, (value: any) => {
 });
 
 
+const expression = or(andThen(expression, op, number), number);
+
+
 console.log(
   expression(unit("1+190")),
 );
+// error: TS2448 [ERROR]: Block-scoped variable 'expression' used before its declaration.
+// expression = map(expression, (value: any) => {
+// ~~~~~~~~~~
