@@ -9,7 +9,7 @@ type OutputValue = {
 type Result = OutputValue | undefined;
 
 // function signatures
-type Parser = (s: Stream) => Result;
+export type Parser = (s: Stream) => Result;
 type Generator = (s: string) => Parser;
 type Combinator = (...parsers: Parser[]) => Parser;
 
@@ -74,6 +74,9 @@ export const and: Combinator = (p1, p2) =>
       }
     }
   };
+
+
+export const lazyand = (p1: () => Parser, p2: () => Parser): Parser => (input) =>  and(p1(), p2())(input)
 
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const andThen: Combinator = (...ps) =>

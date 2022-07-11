@@ -9,6 +9,8 @@ import {
   or,
   string,
   unit,
+  Parser,
+  lazyand,
 } from "./lib.ts";
 
 const intParse = (x: string) => parseInt(x);
@@ -21,34 +23,41 @@ const minus = char("-");
 const times = char("*");
 const divide = char("/");
 const op = any(divide, times, plus, minus);
-expression = map(expression, (value: any) => {
-  if (!value) {
-    return;
-  }
-  const [x, operation, y] = value;
+// expression = map(expression, (value: any) => {
+//   if (!value) {
+//     return;
+//   }
+//   const [x, operation, y] = value;
 
-  switch (operation) {
-    case "+": {
-      return x + y;
-    }
-    case "-": {
-      return x - y;
-    }
-    case "*": {
-      return x * y;
-    }
-    case "/": {
-      return x / y;
-    }
-  }
-});
+//   switch (operation) {
+//     case "+": {
+//       return x + y;
+//     }
+//     case "-": {
+//       return x - y;
+//     }
+//     case "*": {
+//       return x * y;
+//     }
+//     case "/": {
+//       return x / y;
+//     }
+//   }
+// });
 
 
-const expression = or(andThen(expression, op, number), number);
+function lazyAnd(first: () => Parser, second: () => Parser): Parser {
+  return function (input) {
+    return and(first(), second())(input);
+  };
+}
+const expression = or(lazyAnd(() => number, () => and(op, expression)), number);
 
+const parenOne = or(and(char("("), lazyAnd(() => parenOne, () => char(")"))), char("1"));
 
 console.log(
-  expression(unit("1+190")),
+  parenOne(unit("(((1)))")),
+  expression(unit("1+1+1")),
 );
 // error: TS2448 [ERROR]: Block-scoped variable 'expression' used before its declaration.
 // expression = map(expression, (value: any) => {
