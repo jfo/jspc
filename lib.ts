@@ -75,8 +75,8 @@ export const and: Combinator = (p1, p2) =>
     }
   };
 
-
-export const lazyand = (p1: () => Parser, p2: () => Parser): Parser => (input) =>  and(p1(), p2())(input)
+export const lazyand = (p1: () => Parser, p2: () => Parser): Parser =>
+  (input) => and(p1(), p2())(input);
 
 export const or: Combinator = (p1, p2) => (input) => p1(input) || p2(input);
 export const andThen: Combinator = (...ps) =>

@@ -3,8 +3,18 @@
 // import {anyStringOf, float, string, stringLen,anyCharOf, noCharOf, whitespace} from "../lib/index";
 // import {visualizeTrace} from "../lib/internal/trace-visualizer";
 
-
-import {DelayedParjser, many, manySepBy, map, or, stringify, qthen, thenq, then, between} from "https://jspm.dev/parjs";
+import {
+  between,
+  DelayedParjser,
+  many,
+  manySepBy,
+  map,
+  or,
+  qthen,
+  stringify,
+  then,
+  thenq,
+} from "https://jspm.dev/parjs";
 
 // class JsonNumber {
 //     constructor(public value: number) {
@@ -49,7 +59,6 @@ import {DelayedParjser, many, manySepBy, map, or, stringify, qthen, thenq, then,
 // };
 
 // let pJsonValue = later<JsonValue>();
-
 
 // let pEscapeChar = anyCharOf(
 //     Object.getOwnPropertyNames(escapes).join()
@@ -133,7 +142,6 @@ import {DelayedParjser, many, manySepBy, map, or, stringify, qthen, thenq, then,
 //     })
 // );
 
-
 // // An object is a sequence of object properties between {...} separated by ","
 // let pObject = pObjectProperty.pipe(
 //     manySepBy(","),
@@ -164,10 +172,9 @@ import {DelayedParjser, many, manySepBy, map, or, stringify, qthen, thenq, then,
 //     }
 // }
 
-// let result = pJsonValue.parse(`{"a" : 2, 
+// let result = pJsonValue.parse(`{"a" : 2,
 
-
-// "b\\"" : 
+// "b\\"" :
 // 44325, "z" : "hi!", "a" : true,
 //  "array" : ["hi", 1, {"a" :    "b\\"" }, [], {}]}`);
 // if (result.kind !== ResultKind.Ok) {
